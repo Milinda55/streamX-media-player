@@ -20,6 +20,7 @@ const MediaPlayer = () => {
             setMediaSource(fileURL);
             setIsPlaying(true);
         },
+        noClick: true, // Prevent file selector from opening on clicks
     });
 
     const handlePlayPause = () => {
@@ -94,73 +95,80 @@ const MediaPlayer = () => {
 
     return (
         <div
-            {...getRootProps()}
-            className={`bg-black rounded-lg shadow-lg overflow-hidden ${isFullscreen ? 'w-screen h-screen' : 'w-3/4'}`}
+            className={`bg-gray-800 rounded-lg shadow-lg overflow-hidden ${isFullscreen ? 'w-screen h-screen' : 'w-[800px] h-[600px]'}`}
             ref={playerRef}
         >
-            <input {...getInputProps()} />
-            {isDragActive ? (
-                <p className="text-white text-center p-10">Drop the media file here...</p>
-            ) : (
-                <>
+            <div className="h-full flex flex-col">
+                <div className="flex-1 relative">
                     {mediaSource ? (
-                        <>
-                            <video
-                                ref={mediaRef}
-                                src={mediaSource}
-                                onTimeUpdate={handleTimeUpdate}
-                                autoPlay={isPlaying}
-                                muted={isMuted}
-                                className="w-full"
-                            />
-                            <div className="p-4 bg-gray-800">
-                                <div className="flex items-center space-x-4">
-                                    <button onClick={handlePlayPause} className="text-white">
-                                        {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} />}
-                                    </button>
-                                    <button onClick={handleStop} className="text-white">
-                                        <FaStop size={24} />
-                                    </button>
-                                    <button onClick={() => handleSkip(-10)} className="text-white">
-                                        -10s
-                                    </button>
-                                    <button onClick={() => handleSkip(10)} className="text-white">
-                                        +10s
-                                    </button>
-                                    <button onClick={handleMuteToggle} className="text-white">
-                                        {isMuted ? <FaVolumeMute size={24} /> : <FaVolumeUp size={24} />}
-                                    </button>
-                                    <input
-                                        type="range"
-                                        min="0"
-                                        max="1"
-                                        step="0.01"
-                                        value={volume}
-                                        onChange={handleVolumeChange}
-                                        className="w-24"
-                                    />
-                                    <span className="text-white">
-                    {formatTime(currentTime)} / {formatTime(duration)}
-                  </span>
-                                    <button onClick={toggleFullscreen} className="text-white ml-auto">
-                                        {isFullscreen ? <FaCompress size={24} /> : <FaExpand size={24} />}
-                                    </button>
-                                </div>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    value={(currentTime / duration) * 100 || 0}
-                                    onChange={handleProgressChange}
-                                    className="w-full mt-2"
-                                />
-                            </div>
-                        </>
+                        <video
+                            ref={mediaRef}
+                            src={mediaSource}
+                            onTimeUpdate={handleTimeUpdate}
+                            autoPlay={isPlaying}
+                            muted={isMuted}
+                            className="w-full h-full object-cover"
+                        />
                     ) : (
-                        <p className="text-white text-center p-10">Drag and drop a media file to play.</p>
+                        <div
+                            {...getRootProps()}
+                            className="w-full h-full flex items-center justify-center bg-gray-700 cursor-pointer"
+                            onClick={() => document.getElementById('file-input').click()}
+                        >
+                            <input {...getInputProps()} id="file-input" />
+                            {isDragActive ? (
+                                <p className="text-white">Drop the media file here...</p>
+                            ) : (
+                                <p className="text-white">Click or drag and drop a media file to play.</p>
+                            )}
+                        </div>
                     )}
-                </>
-            )}
+                </div>
+                <div className="p-4 bg-gray-900">
+                    <div className="flex items-center space-x-6">
+                        <button onClick={handlePlayPause} className="text-white">
+                            {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} />}
+                        </button>
+                        <button onClick={handleStop} className="text-white">
+                            <FaStop size={24} />
+                        </button>
+                        <button onClick={() => handleSkip(-10)} className="text-white">
+                            -10s
+                        </button>
+                        <button onClick={() => handleSkip(10)} className="text-white">
+                            +10s
+                        </button>
+                        <button onClick={handleMuteToggle} className="text-white">
+                            {isMuted ? <FaVolumeMute size={24} /> : <FaVolumeUp size={24} />}
+                        </button>
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            value={volume}
+                            onChange={handleVolumeChange}
+                            className="w-24"
+                        />
+                        <span className="text-white">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
+                    </div>
+                    <div className="flex items-center mt-2">
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={(currentTime / duration) * 100 || 0}
+                            onChange={handleProgressChange}
+                            className="flex-1"
+                        />
+                        <button onClick={toggleFullscreen} className="text-white ml-4">
+                            {isFullscreen ? <FaCompress size={24} /> : <FaExpand size={24} />}
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
