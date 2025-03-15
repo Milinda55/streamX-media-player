@@ -55,6 +55,13 @@ const MediaPlayer = () => {
         }
     };
 
+    const updateTime = () => {
+        if (videoRef.current || audioRef.current) {
+            setTime((videoRef.current || audioRef.current).currentTime);
+            setDuration((videoRef.current || audioRef.current).duration);
+        }
+    };
+
     return (
         <div className="media-player-container" >
 
@@ -80,12 +87,9 @@ const MediaPlayer = () => {
                         />
 
                         <div className="time-info">
-
+                            <span>{Math.floor(time)} / {Math.floor(duration)}</span>
                         </div>
 
-                        <input
-
-                        />
                         <div className="media-container">
 
 
