@@ -35,6 +35,12 @@ const MediaPlayer = () => {
         }
     };
 
+    const handleSkip = (seconds) => {
+        if (videoRef.current || audioRef.current) {
+            (videoRef.current || audioRef.current).currentTime += seconds;
+        }
+    };
+
     return (
         <div className="media-player-container" >
 
@@ -44,6 +50,8 @@ const MediaPlayer = () => {
                         <div className="controls">
                             <button onClick={handlePlayPause}>{isPlaying ? "Pause" : "Play"}</button>
                             <button onClick={handleStop}>Stop</button>
+                            <button onClick={() => handleSkip(-10)}>Skip Back 10s</button>
+                            <button onClick={() => handleSkip(10)}>Skip Forward 10s</button>
 
                         </div>
 
