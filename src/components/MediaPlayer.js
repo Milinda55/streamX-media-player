@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
-import './MediaPlayer.css';
+import { FaPlay, FaPause, FaStop, FaVolumeUp, FaVolumeMute, FaExpand, FaCompress } from 'react-icons/fa';
 
 const MediaPlayer = () => {
     const [mediaSource, setMediaSource] = useState(null);
@@ -9,8 +9,9 @@ const MediaPlayer = () => {
     const [isMuted, setIsMuted] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [isMaximized, setIsMaximized] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
     const mediaRef = useRef(null);
+    const playerRef = useRef(null);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop: (acceptedFiles) => {
@@ -18,16 +19,8 @@ const MediaPlayer = () => {
             const fileURL = URL.createObjectURL(file);
             setMediaSource(fileURL);
             setIsPlaying(true);
-            console.log('Media source set:', fileURL); // Debugging
         },
     });
-
-    useEffect(() => {
-        if (mediaRef.current) {
-            console.log('Media element:', mediaRef.current); // Debugging
-            console.log('Media source:', mediaRef.current.src); // Debugging
-        }
-    }, [mediaSource]);
 
     const handlePlayPause = () => {
         if (mediaRef.current) {
@@ -76,74 +69,97 @@ const MediaPlayer = () => {
         }
     };
 
+    const handleProgressChange = (e) => {
+        if (mediaRef.current) {
+            mediaRef.current.currentTime = (e.target.value / 100) * duration;
+        }
+    };
+
+    const toggleFullscreen = () => {
+        if (playerRef.current) {
+            if (!isFullscreen) {
+                playerRef.current.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+            setIsFullscreen(!isFullscreen);
+        }
+    };
+
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60);
         const seconds = Math.floor(time % 60);
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
 
-    const toggleMaximize = () => {
-        setIsMaximized(!isMaximized);
-    };
-
     return (
-        <div className={`media-player-container ${isMaximized ? 'maximized' : ''}`} {...getRootProps()}>
+        <div
+            {...getRootProps()}
+            className={`bg-black rounded-lg shadow-lg overflow-hidden ${isFullscreen ? 'w-screen h-screen' : 'w-3/4'}`}
+            ref={playerRef}
+        >
             <input {...getInputProps()} />
             {isDragActive ? (
-                <p>Drop the media file here...</p>
+                <p className="text-white text-center p-10">Drop the media file here...</p>
             ) : (
-                <div className="media-player">
+                <>
                     {mediaSource ? (
                         <>
-                            <div className="controls">
-                                <button onClick={handlePlayPause}>{isPlaying ? 'Pause' : 'Play'}</button>
-                                <button onClick={handleStop}>Stop</button>
-                                <button onClick={() => handleSkip(-10)}>Skip Back 10s</button>
-                                <button onClick={() => handleSkip(10)}>Skip Forward 10s</button>
-                                <button onClick={handleMuteToggle}>{isMuted ? 'Unmute' : 'Mute'}</button>
-                                <button onClick={toggleMaximize}>{isMaximized ? 'Minimize' : 'Maximize'}</button>
-                            </div>
-
-                            <input
-                                type="range"
-                                min="0"
-                                max="1"
-                                step="0.01"
-                                value={volume}
-                                onChange={handleVolumeChange}
+                            <video
+                                ref={mediaRef}
+                                src={mediaSource}
+                                onTimeUpdate={handleTimeUpdate}
+                                autoPlay={isPlaying}
+                                muted={isMuted}
+                                className="w-full"
                             />
-
-                            <div className="time-info">
-                                <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
-                            </div>
-
-                            <div className="media-container">
-                                {mediaSource.endsWith('.mp4') ? (
-                                    <video
-                                        ref={mediaRef}
-                                        src={mediaSource}
-                                        onTimeUpdate={handleTimeUpdate}
-                                        autoPlay={isPlaying}
-                                        muted={isMuted}
-                                        controls={false}
-                                        style={{ width: '100%', height: 'auto' }} // Ensure video is visible
+                            <div className="p-4 bg-gray-800">
+                                <div className="flex items-center space-x-4">
+                                    <button onClick={handlePlayPause} className="text-white">
+                                        {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} />}
+                                    </button>
+                                    <button onClick={handleStop} className="text-white">
+                                        <FaStop size={24} />
+                                    </button>
+                                    <button onClick={() => handleSkip(-10)} className="text-white">
+                                        -10s
+                                    </button>
+                                    <button onClick={() => handleSkip(10)} className="text-white">
+                                        +10s
+                                    </button>
+                                    <button onClick={handleMuteToggle} className="text-white">
+                                        {isMuted ? <FaVolumeMute size={24} /> : <FaVolumeUp size={24} />}
+                                    </button>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="1"
+                                        step="0.01"
+                                        value={volume}
+                                        onChange={handleVolumeChange}
+                                        className="w-24"
                                     />
-                                ) : (
-                                    <audio
-                                        ref={mediaRef}
-                                        src={mediaSource}
-                                        onTimeUpdate={handleTimeUpdate}
-                                        autoPlay={isPlaying}
-                                        muted={isMuted}
-                                        controls={false}
-                                    />
-                                )}
+                                    <span className="text-white">
+                    {formatTime(currentTime)} / {formatTime(duration)}
+                  </span>
+                                    <button onClick={toggleFullscreen} className="text-white ml-auto">
+                                        {isFullscreen ? <FaCompress size={24} /> : <FaExpand size={24} />}
+                                    </button>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    value={(currentTime / duration) * 100 || 0}
+                                    onChange={handleProgressChange}
+                                    className="w-full mt-2"
+                                />
                             </div>
                         </>
                     ) : (
-                        <p>Drag and drop a media file to play.</p>
+                        <p className="text-white text-center p-10">Drag and drop a media file to play.</p>
                     )}
-                </div>
+                </>
             )}
         </div>
     );

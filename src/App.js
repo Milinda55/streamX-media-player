@@ -1,11 +1,9 @@
 import React from 'react';
-import './App.css';
 import MediaPlayer from './components/MediaPlayer';
 
 function App() {
     return (
-        <div className="App">
-            <h1>React Media Player</h1>
+        <div className="flex justify-center items-center min-h-screen bg-gray-900">
             <MediaPlayer />
         </div>
     );
