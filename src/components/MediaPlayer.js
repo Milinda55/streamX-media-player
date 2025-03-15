@@ -95,7 +95,7 @@ const MediaPlayer = () => {
 
     return (
         <div
-            className={`bg-gray-800 rounded-lg shadow-lg overflow-hidden ${isFullscreen ? 'w-screen h-screen' : 'w-[800px] h-[600px]'}`}
+            className={`bg-gray-900 rounded-lg shadow-lg overflow-hidden ${isFullscreen ? 'w-screen h-screen' : 'w-[800px] h-[600px]'}`}
             ref={playerRef}
         >
             <div className="h-full flex flex-col">
@@ -112,19 +112,22 @@ const MediaPlayer = () => {
                     ) : (
                         <div
                             {...getRootProps()}
-                            className="w-full h-full flex items-center justify-center bg-gray-700 cursor-pointer"
+                            className={`w-full h-full flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                                isDragActive ? 'bg-gray-700' : 'bg-gray-800'
+                            }`}
                             onClick={() => document.getElementById('file-input').click()}
                         >
                             <input {...getInputProps()} id="file-input" />
-                            {isDragActive ? (
-                                <p className="text-white">Drop the media file here...</p>
-                            ) : (
-                                <p className="text-white">Click or drag and drop a media file to play.</p>
-                            )}
+                            <p className="text-white text-lg mb-4">
+                                {isDragActive ? 'Drop the media file here...' : 'Click or drag and drop a media file to play'}
+                            </p>
+                            <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center">
+                                <FaPlay size={24} className="text-white" />
+                            </div>
                         </div>
                     )}
                 </div>
-                <div className="p-4 bg-gray-900">
+                <div className="p-4 bg-gray-800">
                     <div className="flex items-center space-x-6">
                         <button onClick={handlePlayPause} className="text-white">
                             {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} />}
