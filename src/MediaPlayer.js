@@ -12,6 +12,14 @@ const MediaPlayer = () => {
     const videoRef = useRef(null);
     const audioRef = useRef(null);
 
+    const { getRootProps, getInputProps } = useDropzone({
+        onDrop: (acceptedFiles) => {
+            const file = acceptedFiles[0];
+            setMediaSource(URL.createObjectURL(file));
+            setIsPlaying(true);
+        },
+    });
+
     return (
         <div className="media-player-container" >
 
