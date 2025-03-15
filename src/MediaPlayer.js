@@ -11,4 +11,32 @@ const MediaPlayer = () => {
     const [duration, setDuration] = useState(0);
     const videoRef = useRef(null);
     const audioRef = useRef(null);
-}
+
+    return (
+        <div className="media-player-container" >
+
+            <div className="media-player">
+                {mediaSource && (
+                    <>
+                        <div className="controls">
+
+                        </div>
+
+                        <div className="time-info">
+
+                        </div>
+
+                        <input
+
+                        />
+                        <div className="media-container">
+
+
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
+    );
+};
+export default MediaPlayer;
