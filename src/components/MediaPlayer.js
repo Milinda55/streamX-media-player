@@ -50,10 +50,12 @@ const MediaPlayer = () => {
 
     const handleVolumeChange = (e) => {
         setVolume(e.target.value);
-        if (videoRef.current || audioRef.current) {
-            (videoRef.current || audioRef.current).volume = volume;
+        const mediaElement = videoRef.current || audioRef.current;
+        if (mediaElement) {
+            mediaElement.volume = e.target.value;
         }
     };
+
 
     const updateTime = () => {
         if (videoRef.current || audioRef.current) {
