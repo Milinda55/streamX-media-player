@@ -1,0 +1,52 @@
+/* src/MediaPlayer.css */
+
+.media-player-container {
+    width: 600px;
+    margin: 50px auto;
+    border: 2px solid #ccc;
+    padding: 20px;
+    background-color: #000;
+    color: white;
+    text-align: center;
+}
+
+.media-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.controls button {
+    margin: 5px;
+    padding: 10px;
+    background-color: #555;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.controls button:hover {
+    background-color: #777;
+}
+
+.time-info {
+    margin: 10px;
+    font-size: 18px;
+}
+
+input[type="range"] {
+    width: 200px;
+    margin: 10px;
+}
+
+.media-container {
+    margin-top: 20px;
+}
+
+button {
+    margin: 5px;
+}
+
+input[type="file"] {
+    display: none;
+}
