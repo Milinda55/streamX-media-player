@@ -63,8 +63,8 @@ const MediaPlayer = () => {
     };
 
     return (
-        <div className="media-player-container" >
-
+        <div className="media-player-container" {...getRootProps()}>
+            <input {...getInputProps()} />
             <div className="media-player">
                 {mediaSource && (
                     <>
@@ -91,8 +91,25 @@ const MediaPlayer = () => {
                         </div>
 
                         <div className="media-container">
-
-
+                            {mediaSource && mediaSource.endsWith('.mp4') ? (
+                                <video
+                                    ref={videoRef}
+                                    src={mediaSource}
+                                    onTimeUpdate={updateTime}
+                                    controls
+                                    width="100%"
+                                    height="auto"
+                                ></video>
+                            ) : mediaSource && mediaSource.endsWith('.mp3') ? (
+                                <audio
+                                    ref={audioRef}
+                                    src={mediaSource}
+                                    onTimeUpdate={updateTime}
+                                    controls
+                                    width="100%"
+                                    height="auto"
+                                ></audio>
+                            ) : null}
                         </div>
                     </>
                 )}
