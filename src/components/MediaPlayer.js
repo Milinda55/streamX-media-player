@@ -16,7 +16,9 @@ const MediaPlayer = () => {
         onDrop: (acceptedFiles) => {
             const file = acceptedFiles[0];
             setMediaSource(URL.createObjectURL(file));
-            setIsPlaying(true);
+            setIsPlaying(false);
+            setTime(0);  // Reset the time when a new file is dropped
+            setDuration(0);
         },
     });
 
@@ -58,11 +60,29 @@ const MediaPlayer = () => {
 
 
     const updateTime = () => {
-        if (videoRef.current || audioRef.current) {
-            setTime((videoRef.current || audioRef.current).currentTime);
-            setDuration((videoRef.current || audioRef.current).duration);
+        const mediaElement = videoRef.current || audioRef.current;
+        if (mediaElement) {
+            setTime(mediaElement.currentTime);
+            setDuration(mediaElement.duration);
         }
     };
+
+    const handleFullscreen = () => {
+        const mediaElement = videoRef.current;
+        if (mediaElement) {
+            if (mediaElement.requestFullscreen) {
+                mediaElement.requestFullscreen();
+            } else if (mediaElement.mozRequestFullScreen) { // Firefox
+                mediaElement.mozRequestFullScreen();
+            } else if (mediaElement.webkitRequestFullscreen) { // Chrome, Safari
+                mediaElement.webkitRequestFullscreen();
+            } else if (mediaElement.msRequestFullscreen) { // IE/Edge
+                mediaElement.msRequestFullscreen();
+            }
+        }
+    };
+
+
 
     return (
         <div className="media-player-container" {...getRootProps()}>
@@ -76,6 +96,8 @@ const MediaPlayer = () => {
                             <button onClick={() => handleSkip(-10)}>Skip Back 10s</button>
                             <button onClick={() => handleSkip(10)}>Skip Forward 10s</button>
                             <button onClick={handleMuteToggle}>{isMuted ? "Unmute" : "Mute"}</button>
+                            <button onClick={handleFullscreen}>Fullscreen</button>
+
 
                         </div>
 
