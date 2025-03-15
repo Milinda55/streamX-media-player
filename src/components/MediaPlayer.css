@@ -1,13 +1,16 @@
-/* src/MediaPlayer.css */
-
 .media-player-container {
     width: 600px;
-    margin: 50px auto;
+    margin: 20px auto;
     border: 2px solid #ccc;
     padding: 20px;
     background-color: #000;
     color: white;
     text-align: center;
+}
+
+.media-player-container.maximized {
+    width: 90%;
+    height: 90vh;
 }
 
 .media-player {
@@ -41,12 +44,15 @@ input[type="range"] {
 
 .media-container {
     margin-top: 20px;
+    width: 100%;
 }
 
-button {
-    margin: 5px;
+video {
+    width: 100%;
+    height: auto;
+    background-color: #000; /* Ensure video background is black */
 }
 
-input[type="file"] {
-    display: none;
+audio {
+    width: 100%;
 }
