@@ -41,6 +41,20 @@ const MediaPlayer = () => {
         }
     };
 
+    const handleMuteToggle = () => {
+        setIsMuted(!isMuted);
+        if (videoRef.current || audioRef.current) {
+            (videoRef.current || audioRef.current).muted = !isMuted;
+        }
+    };
+
+    const handleVolumeChange = (e) => {
+        setVolume(e.target.value);
+        if (videoRef.current || audioRef.current) {
+            (videoRef.current || audioRef.current).volume = volume;
+        }
+    };
+
     return (
         <div className="media-player-container" >
 
@@ -52,8 +66,18 @@ const MediaPlayer = () => {
                             <button onClick={handleStop}>Stop</button>
                             <button onClick={() => handleSkip(-10)}>Skip Back 10s</button>
                             <button onClick={() => handleSkip(10)}>Skip Forward 10s</button>
+                            <button onClick={handleMuteToggle}>{isMuted ? "Unmute" : "Mute"}</button>
 
                         </div>
+
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            value={volume}
+                            onChange={handleVolumeChange}
+                        />
 
                         <div className="time-info">
 
