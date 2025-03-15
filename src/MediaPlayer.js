@@ -20,6 +20,21 @@ const MediaPlayer = () => {
         },
     });
 
+    const handlePlayPause = () => {
+        if (videoRef.current || audioRef.current) {
+            isPlaying ? (videoRef.current || audioRef.current).pause() : (videoRef.current || audioRef.current).play();
+            setIsPlaying(!isPlaying);
+        }
+    };
+
+    const handleStop = () => {
+        if (videoRef.current || audioRef.current) {
+            (videoRef.current || audioRef.current).pause();
+            (videoRef.current || audioRef.current).currentTime = 0;
+            setIsPlaying(false);
+        }
+    };
+
     return (
         <div className="media-player-container" >
 
@@ -27,6 +42,8 @@ const MediaPlayer = () => {
                 {mediaSource && (
                     <>
                         <div className="controls">
+                            <button onClick={handlePlayPause}>{isPlaying ? "Pause" : "Play"}</button>
+                            <button onClick={handleStop}>Stop</button>
 
                         </div>
 
